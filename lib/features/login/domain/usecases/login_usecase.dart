@@ -12,11 +12,6 @@ class LoginUsecaseImpl implements LoginUsecase {
 
   @override
   Future<User?> call({required String email, required String password}) async {
-    final User? user =
-        await authRepository.login(email: email, password: password);
-
-    if (user != null) return user;
-
-    return null;
+    return authRepository.login(email: email, password: password);
   }
 }
