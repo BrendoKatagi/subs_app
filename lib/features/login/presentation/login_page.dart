@@ -62,29 +62,31 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  bool _listener(AuthUserState previous, AuthUserState current) {
+    if (current is AuthUserStateLoginLoading) {
+      AppOverlay.show(context, const LoadingOverlay());
+    }
+
+    if ((previous is AuthUserStateLoginLoading && current is! AuthUserStateLoginLoading) ||
+        (previous is AuthUserStateLoginLoading && current is AuthUserStateLogged)) {
+      AppOverlay.dismiss();
+    }
+
+    if (previous is! AuthUserStateLoginError && current is AuthUserStateLoginError) {
+      AppOverlay.dismiss();
+      XSnackBar.error(error: AppStrings.login.loginError).show(context);
+    }
+
+    return loginStates.contains(current.runtimeType);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: authCubit,
       child: BlocConsumer<AuthUserCubit, AuthUserState>(
         listener: (context, state) {},
-        listenWhen: (AuthUserState previous, AuthUserState current) {
-          if (current is AuthUserStateLoginLoading) {
-            AppOverlay.show(context, const LoadingOverlay());
-          }
-
-          if ((previous is AuthUserStateLoginLoading && current is! AuthUserStateLoginLoading) ||
-              (previous is AuthUserStateLoginLoading && current is AuthUserStateLogged)) {
-            AppOverlay.dismiss();
-          }
-
-          if (previous is! AuthUserStateLoginError && current is AuthUserStateLoginError) {
-            AppOverlay.dismiss();
-            XSnackBar.error(error: AppStrings.login.loginError).show(context);
-          }
-
-          return loginStates.contains(current.runtimeType);
-        },
+        listenWhen: _listener,
         buildWhen: (_, current) => loginStates.contains(current.runtimeType),
         builder: (BuildContext context, AuthUserState state) {
           return Scaffold(
@@ -138,8 +140,9 @@ class _LoginPageState extends State<LoginPage> {
                                 InkWell(onTap: () => AppRoutes.navigateToSignUpPage(context), child: XTypography.paragraphRegular(AppStrings.login.signIn)),
                                 XTypography.paragraphRegular(AppStrings.login.signInDivider),
                                 InkWell(
-                                    onTap: () => AppRoutes.navigateToResetPasswordPage(context),
-                                    child: XTypography.paragraphRegular(AppStrings.login.forgotMyPassword)),
+                                  onTap: () => AppRoutes.navigateToResetPasswordPage(context),
+                                  child: XTypography.paragraphRegular(AppStrings.login.forgotMyPassword),
+                                ),
                               ],
                             ),
                           ],
