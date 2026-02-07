@@ -19,6 +19,13 @@ A production-ready Flutter application built with Clean Architecture and Bloc pa
 
 ---
 
+## 📱 Screenshots
+
+![Alt text](assets/images/subs_image.png?raw=true "Title")
+
+---
+
+
 ## 🏗️ Architecture
 
 This project follows **Clean Architecture** principles with **Domain-Driven Design (DDD)**:
@@ -103,62 +110,6 @@ lib/
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Flutter SDK 3.4.0+
-- Dart SDK 3.4.0+
-- Firebase project (optional, for auth)
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/subs_app.git
-cd subs_app
-
-# Install dependencies
-flutter pub get
-
-# Run with flavor (development/staging/production)
-flutter run --flavor development --target lib/main_development.dart
-```
-
-### Available Flavors
-
-```sh
-# Development
-flutter run --flavor development --target lib/main_development.dart
-
-# Staging
-flutter run --flavor staging --target lib/main_staging.dart
-
-# Production
-flutter run --flavor production --target lib/main_production.dart
-```
-
-### Environment Setup
-
-1. Copy `.env.example` to `.env.dev`, `.env.staging`, or `.env.prod`
-2. Configure your API base URLs
-3. Run `flutterfire configure` for Firebase setup
-
----
-
-## 🧪 Testing
-
-```bash
-# Run all tests with coverage
-flutter test --coverage --test-randomize-ordering-seed random
-
-# Generate coverage report
-genhtml coverage/lcov.info -o coverage/
-open coverage/index.html
-```
-
----
-
 ## 🌐 Internationalization
 
 The app supports multiple languages:
@@ -176,30 +127,6 @@ The app supports multiple languages:
 
 ---
 
-## 📱 Screenshots
-
-[Add your app screenshots here]
-
----
-
-## 🔧 Build Commands
-
-```sh
-# Build for web
-flutter build web -t lib/main_production.dart --release
-
-# Build Android APK
-flutter build apk --flavor production -t lib/main_production.dart
-
-# Build iOS
-flutter build ios --flavor production -t lib/main_production.dart
-
-# Generate code (build_runner)
-dart run build_runner build --delete-conflicting-outputs
-```
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -209,7 +136,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Author
 
 **Your Name**
-- LinkedIn: [Your LinkedIn](https://www.linkedin.com/in/brendo-katagi/)
+- LinkedIn: [Brendo Katagi](https://www.linkedin.com/in/brendo-katagi/)
 
 ---
 
