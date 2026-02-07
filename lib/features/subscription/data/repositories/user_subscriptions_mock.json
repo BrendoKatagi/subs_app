@@ -1,0 +1,116 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Joaquim Barbearia",
+      "profileImageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEMBjDXYMtLmBaav4y2dsH83Q5edOm0srlgogF26F9T0nBIkT-",
+      "coverImageUrl": "https://maisduo.com.br/wp-content/uploads/2022/07/5-scaled-520x780.jpg",
+      "bio": "A melhor barbearia da região, agora no formato assinatura. Aproveite o melhor de nossos produtos mensalmente com uma super economia.",
+      "phone": "(12) 99999-9999",
+      "addressUrl": "https://www.google.com/maps",
+      "rate": 4,
+      "subscriptionPlans": [
+        {
+          "id": 1,
+          "title": "Plano Silver",
+          "monthlyPrice": 180,
+          "subscriptionStats": "subscripted",
+          "description": "Nesse plano você tem direito a 4 cortes e 4 barbas feitas por mês.",
+          "subscriptionTickets": [
+            {
+              "id": 1,
+              "title": "1 Corte + 1 Barba",
+              "subscriptionTicketStats": "done",
+              "checkInDateTime": "2024-01-14 09:54:00",
+              "storeHours": [
+                "seg - sex | 09h às 18h",
+                "sáb | 09 às 15h",
+                "dom | 09 às 12h"
+              ]
+            },
+            {
+              "id": 2,
+              "title": "1 Corte + 1 Barba",
+              "subscriptionTicketStats": "done",
+              "checkInDateTime": "2024-01-09 21:13:00",
+              "storeHours": ["seg - sex | 09h às 18h"]
+            },
+            {
+              "id": 3,
+              "title": "1 Corte + 1 Barba",
+              "subscriptionTicketStats": "done",
+              "checkInDateTime": "2024-01-01 11:39:00",
+              "storeHours": ["seg - sex | 09h às 18h"]
+            },
+            {
+              "id": 4,
+              "title": "1 Corte + 1 Barba",
+              "subscriptionTicketStats": "expired",
+              "storeHours": ["seg - sex | 09h às 18h"]
+            },
+            {
+              "id": 5,
+              "title": "1 Corte + 1 Barba",
+              "subscriptionTicketStats": "available",
+              "checkInData": "AS2XC4",
+              "storeHours": [
+                "seg - sex | 09h às 18h",
+                "sáb | 09 às 15h",
+                "dom | 09 às 12h"
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Plano Gold",
+          "monthlyPrice": 320,
+          "subscriptionStats": "available",
+          "description": "Nesse plano você tem direito a 4 cortes e 4 barbas feitas por mês. "
+        },
+        {
+          "id": 3,
+          "title": "Plano Diamond",
+          "monthlyPrice": 350,
+          "subscriptionStats": "available",
+          "description": "Nesse plano você tem direito a 4 cortes e 4 barbas feitas por mês e 1 hidratação da casa."
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Lava Rápido Total",
+      "profileImageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEMBjDXYMtLmBaav4y2dsH83Q5edOm0srlgogF26F9T0nBIkT-",
+      "coverImageUrl": "https://maisduo.com.br/wp-content/uploads/2022/07/5-scaled-520x780.jpg",
+      "bio": "A melhor barbearia da região, agora no formato assinatura. Aproveite o melhor de nossos produtos mensalmente com uma super economia.",
+      "phone": "(12) 99999-9999",
+      "addressUrl": "https://www.google.com/maps",
+      "rate": 4,
+      "subscriptionPlans": [
+        {
+          "id": 4,
+          "title": "Plano Total",
+          "monthlyPrice": 100,
+          "subscriptionStats": "subscripted",
+          "description": "Nesse plano você tem direito a 1 Lavagem Simples por mês.",
+          "subscriptionTickets": [
+            {
+              "id": 6,
+              "title": "1 Lavagem Simples",
+              "subscriptionTicketStats": "available",
+              "checkInData": "9X3AC0",
+              "storeHours": ["seg - sáb | 09h às 16h"]
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Plano Total+",
+          "monthlyPrice": 150,
+          "subscriptionStats": "available",
+          "description": "Nesse plano você tem direito a 1 Lavagem Completa por mês."
+        }
+      ]
+    }
+  ]
+}

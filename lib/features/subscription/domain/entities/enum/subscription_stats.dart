@@ -1,0 +1,4 @@
+enum SubscriptionStats {
+  available,
+  subscripted,
+}

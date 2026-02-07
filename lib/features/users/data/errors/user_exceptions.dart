@@ -1,0 +1,1 @@
+class UserWithActivePlansException implements Exception {}
