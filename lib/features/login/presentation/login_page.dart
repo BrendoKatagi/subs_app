@@ -23,20 +23,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late GlobalKey<FormState> _formKey;
-  late TextEditingController _emailController;
-  late TextEditingController _passwordController;
-  late bool isValid;
-  late AuthUserCubit authCubit;
+  late final GlobalKey<FormState> _formKey;
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  late final AuthUserCubit _authCubit;
 
   @override
   void initState() {
+    super.initState();
     _formKey = GlobalKey<FormState>();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    isValid = false;
-    authCubit = GetIt.I.get<AuthUserCubit>();
-    super.initState();
+    _authCubit = GetIt.I.get<AuthUserCubit>();
   }
 
   @override
@@ -46,127 +44,180 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _onSubmitPress(BuildContext context) {
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
-
-    authCubit.login(email: email, password: password);
+  bool get _isFormValid {
+    return _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
   }
 
-  void _onChanged() {
-    final bool isNotEmpty = _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
-    if (isNotEmpty != isValid) {
-      setState(() {
-        isValid = isNotEmpty;
-      });
-    }
+  void _onFieldChanged() => setState(() {});
+
+  void _onSubmit() {
+    if (!_formKey.currentState!.validate()) return;
+    _authCubit.login(email: _emailController.text, password: _passwordController.text);
   }
 
-  bool _listener(AuthUserState previous, AuthUserState current) {
+  void _handleLoadingState(AuthUserState current) {
     if (current is AuthUserStateLoginLoading) {
       AppOverlay.show(context, const LoadingOverlay());
     }
+  }
 
-    if ((previous is AuthUserStateLoginLoading && current is! AuthUserStateLoginLoading) ||
-        (previous is AuthUserStateLoginLoading && current is AuthUserStateLogged)) {
+  void _handleDismissLoading(AuthUserState previous, AuthUserState current) {
+    final wasLoading = previous is AuthUserStateLoginLoading;
+    final isDoneLoading = current is! AuthUserStateLoginLoading;
+    if (wasLoading && isDoneLoading) {
       AppOverlay.dismiss();
     }
+  }
 
-    if (previous is! AuthUserStateLoginError && current is AuthUserStateLoginError) {
+  void _handleErrorState(AuthUserState current) {
+    if (current is AuthUserStateLoginError) {
       AppOverlay.dismiss();
+      AppOverlay.dismiss(); // Ensure overlay is dismissed
       XSnackBar.error(error: AppStrings.login.loginError).show(context);
     }
+  }
 
-    return loginStates.contains(current.runtimeType);
+  void _handleInvalidState(AuthUserState current) {
+    if (current is AuthUserStateLoginInvalid) {
+      XSnackBar.error(error: current.errorMessage ?? AppStrings.login.loginError).show(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: authCubit,
-      child: BlocConsumer<AuthUserCubit, AuthUserState>(
-        listener: (context, state) {},
-        listenWhen: _listener,
-        buildWhen: (_, current) => loginStates.contains(current.runtimeType),
-        builder: (BuildContext context, AuthUserState state) {
-          return Scaffold(
-            body: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: Wrap(
-                      runSpacing: 21,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: XTypography.headingRegularBold(AppStrings.login.login, maxLines: 1),
-                        ),
-                        XTextField(
-                          controller: _emailController,
-                          width: 700,
-                          labelText: AppStrings.login.email,
-                          fillColor: XColors.textFieldBackground[20],
-                          onChanged: (String value) {
-                            _onChanged();
-                          },
-                        ),
-                        VisibilityTextField(
-                          controller: _passwordController,
-                          width: 700,
-                          labelText: AppStrings.login.password,
-                          fillColor: XColors.textFieldBackground[20],
-                          onChanged: (String value) {
-                            _onChanged();
-                          },
-                          errorMessage: state is AuthUserStateLoginInvalid ? state.errorMessage : null,
-                        ),
-                        Flex(
-                          direction: context.isSmallDevice() ? Axis.vertical : Axis.horizontal,
-                          mainAxisAlignment: context.isSmallDevice() ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
-                          children: [
-                            XPrimaryButton(
-                              AppStrings.login.loginButton,
-                              onPressed: isValid ? () => _onSubmitPress(context) : null,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                            ),
-                            Visibility(visible: context.isSmallDevice(), child: const SizedBox(height: 10)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InkWell(onTap: () => AppRoutes.navigateToSignUpPage(context), child: XTypography.paragraphRegular(AppStrings.login.signIn)),
-                                XTypography.paragraphRegular(AppStrings.login.signInDivider),
-                                InkWell(
-                                  onTap: () => AppRoutes.navigateToResetPasswordPage(context),
-                                  child: XTypography.paragraphRegular(AppStrings.login.forgotMyPassword),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        width: 80,
-                        padding: const EdgeInsets.only(bottom: 20),
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(image: AssetImage('assets/images/logo_dark.png'), fit: BoxFit.contain),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      value: _authCubit,
+      child: Scaffold(
+        body: BlocListener<AuthUserCubit, AuthUserState>(
+          listener: (context, state) {
+            _handleLoadingState(state);
+            if (context.mounted) _handleDismissLoading(state, state);
+            _handleErrorState(state);
+            _handleInvalidState(state);
+          },
+          child: _buildFormContent(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormContent() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          const Spacer(),
+          _buildLoginForm(),
+          _buildFooterLogo(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginForm() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      constraints: const BoxConstraints(maxWidth: 600),
+      child: Wrap(
+        runSpacing: 21,
+        children: <Widget>[
+          _buildTitle(),
+          _buildEmailField(),
+          _buildPasswordField(),
+          _buildActionButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
+      child: XTypography.headingRegularBold(AppStrings.login.login, maxLines: 1),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return XTextField(
+      controller: _emailController,
+      width: 700,
+      labelText: AppStrings.login.email,
+      fillColor: XColors.textFieldBackground[20],
+      onChanged: (_) => _onFieldChanged(),
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return BlocBuilder<AuthUserCubit, AuthUserState>(
+      builder: (context, state) {
+        final errorMessage = state is AuthUserStateLoginInvalid ? (state.errorMessage ?? '') : '';
+        return VisibilityTextField(
+          controller: _passwordController,
+          width: 700,
+          labelText: AppStrings.login.password,
+          fillColor: XColors.textFieldBackground[20],
+          onChanged: (_) => _onFieldChanged(),
+          errorMessage: errorMessage,
+        );
+      },
+    );
+  }
+
+  Widget _buildActionButtons() {
+    final isSmallDevice = context.isSmallDevice();
+    return Flex(
+      direction: isSmallDevice ? Axis.vertical : Axis.horizontal,
+      mainAxisAlignment: isSmallDevice ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+      children: [
+        XPrimaryButton(
+          AppStrings.login.loginButton,
+          onPressed: _isFormValid ? _onSubmit : null,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+        ),
+        if (isSmallDevice) const SizedBox(height: 10),
+        _buildNavigationLinks(),
+      ],
+    );
+  }
+
+  Widget _buildNavigationLinks() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildLink(
+          text: AppStrings.login.signIn,
+          onTap: () => AppRoutes.navigateToSignUpPage(context),
+        ),
+        XTypography.paragraphRegular(AppStrings.login.signInDivider),
+        _buildLink(
+          text: AppStrings.login.forgotMyPassword,
+          onTap: () => AppRoutes.navigateToResetPasswordPage(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLink({required String text, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: XTypography.paragraphRegular(text),
+    );
+  }
+
+  Widget _buildFooterLogo() {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          width: 80,
+          padding: const EdgeInsets.only(bottom: 20),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/logo_dark.png'),
+              fit: BoxFit.contain,
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
